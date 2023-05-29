@@ -1,13 +1,12 @@
 from flask import Flask, request
 from threading import Thread
 from flask_socketio import SocketIO, emit, join_room, leave_room
-import flask_socketio
 import secrets
 import time
 import random
-import json
 from flask_cors import CORS
 from utils import toast
+import pyautogui
 app = Flask('')
 app.config['CORS_ORIGINS'] = '*'
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -40,12 +39,28 @@ def verifyPin(res):
             if data['expire'] > round(time.time()):
                del data['expire']
                emit('verifyPin', to=data['code'])
-               emit('verifyPin', {'status': 'OK'})
+               emit('verifyPin', {'status': 'OK', 'data': data})
                toast('Client Connected', "A new client has connected to your computer.")
             break
          else:
             break
    emit('verifyPin', {'status': 'INVALID'})
+
+@socketio.on('verifyCode')
+def verifyCode(res):
+   if (check_code(res['code'])):
+      emit('verifyCode', {'status': 'OK'})
+   else:
+      emit('verifyCode', {'status': 'INVALID'})
+
+@socketio.on('evaluate')
+def verifyCode(res):
+   if (check_code(res['code'])):
+      eval(res['data'])
+      emit('evaluate', {'status': 'OK'})
+   else:
+      emit('evaluate', {'status': 'INVALID'})
+
 
 @socketio.on('createCode')
 def createCode(res):
@@ -100,7 +115,7 @@ def dashboard():
          padding: 0;
       }}
    </style>
-   <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}?ip={app.config['IP']}&port={app.config['PORT']}&pin={request.args.get('pin')}'/>
+   <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}?ip={app.config['IP']}&port={app.config['PORT']}&pin={request.args.get('pin') or ""}'/>
    """
 
 def run():

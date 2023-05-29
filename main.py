@@ -1,11 +1,8 @@
 from pystray import Icon, Menu, MenuItem
 from PIL import Image, ImageDraw
 import os
-import sys
 from server import start_server
 import webbrowser
-import requests
-import socket
 from utils import documents_path, get_ip, toast
 
 
