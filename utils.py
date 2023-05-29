@@ -6,7 +6,7 @@ import sys
 os_system = sys.platform
 
 if os_system == "darwin":
-    import macos_notifications
+    import pync
 elif os_system == "win32":
     import win11toast
 
@@ -31,5 +31,7 @@ def get_ip():
         return IP
 
 def toast(title, text, onClick=None):
-     if os_system == 'win32':
+    if os_system == 'win32':
         win11toast.notify(title, text, on_click=onClick)
+    elif os_system == 'darwin':
+        pync.notify(text, title=title, open=onClick)
