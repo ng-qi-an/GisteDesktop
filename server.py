@@ -1,37 +1,111 @@
 from flask import Flask, request
 from threading import Thread
-import pyautogui
+from flask_socketio import SocketIO, emit, join_room, leave_room
+import flask_socketio
 import secrets
 import time
+import random
 import json
-from utils import encode_base64
+from flask_cors import CORS
+from utils import toast
 app = Flask('')
-
+app.config['CORS_ORIGINS'] = '*'
+socketio = SocketIO(app, cors_allowed_origins="*")
+CORS(app)
 codes = []
+frontend_client = "http://192.168.31.134:3000" # http://giste-client.pop-plays.live
+
+def check_code(key):
+   for data in codes:
+      if data['code'] == key:
+         if data.get('expire'):
+            if data.get('expire') >= round(time.time()):
+               return True
+         return True
+   return False
 
 @app.route('/')
 def index():
     return {'status': 'OK', "version": "0.1.0-alpha"}
 
-@app.route('/connect')
-def connect():
+@app.route('/shutdown')
+def shutdown():
+   socketio.stop()
+
+@socketio.on('verifyPin')
+def verifyPin(res):
+   for data in codes:
+      if data['pin'] == res['pin']:
+         if data.get('expire'):
+            if data['expire'] > round(time.time()):
+               del data['expire']
+               emit('verifyPin', to=data['code'])
+               emit('verifyPin', {'status': 'OK'})
+               toast('Client Connected', "A new client has connected to your computer.")
+            break
+         else:
+            break
+   emit('verifyPin', {'status': 'INVALID'})
+
+@socketio.on('createCode')
+def createCode(res):
+   while True:
+      pin = random.randint(1000, 9999)
+      counter = 0
+      for data in codes:
+         if data['pin'] == pin:
+            counter += 1
+            break
+      if counter > 1:
+         continue
+      else:
+         break
+   
    payload = {
       'code': secrets.token_urlsafe(16),
       'expire': round(time.time()) + 300,
       'port': app.config['PORT'],
-      'ip': app.config['IP']
+      'ip': app.config['IP'],
+      'pin': str(pin)
    }
    codes.append(payload)
-   print(json.dumps(payload))
-   return f'''
-   <h1>Connect to Giste</h1>
-   <p>The connectoon process is relatively easy. All you need to to is scan the QR code below with the Giste mobile app or the Giste mobile website. Once connected, feel free to close this tab.</p>
-   <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={encode_base64(json.dumps(payload))}"/>
-   <p style="color: red;">The qr code will expire in 5 minutes! Retry connection process if it fails or expires.</p>
-   '''
+   join_room(payload['code'])
+   emit('createCode', {'status': 'OK', 'data': {'ip': payload['ip'], 'pin': payload['pin'], 'port': payload['port']}})
+   
+@app.route('/connect')
+def connect():
+   return f"""
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+   <style>
+      body, html {{
+         margin: 0;
+         padding: 0;
+      }}
+   </style>
+   <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}/connect?port={app.config['PORT']}'/>
+   """
+
+
+@app.route('/dashboard')
+def dashboard():
+   return f"""
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+   <style>
+      body, html {{
+         margin: 0;
+         padding: 0;
+      }}
+   </style>
+   <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}?ip={app.config['IP']}&port={app.config['PORT']}&pin={request.args.get('pin')}'/>
+   """
 
 def run():
-  app.run(host='0.0.0.0', port=app.config['PORT'])
+  print('=== running server ===')
+  socketio.run(app, host='0.0.0.0', port=app.config['PORT'])
 
 def start_server(port, ip):
    app.config['PORT'] = port

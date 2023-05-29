@@ -1,28 +1,22 @@
 from pystray import Icon, Menu, MenuItem
 from PIL import Image, ImageDraw
 import os
-import random
+import sys
 from server import start_server
 import webbrowser
 import requests
 import socket
+from utils import documents_path, get_ip, toast
 
-def get_ip():
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(0)
-        try:
-            # doesn't even have to be reachable
-            s.connect(('10.254.254.254', 1))
-            IP = s.getsockname()[0]
-        except Exception:
-            IP = '127.0.0.1'
-        finally:
-            s.close()
-        return IP
+
+
 local_ip = get_ip()
 
-api_port = random.randint(3000, 9000)
+api_port = 12436
 
+# if not os.path.exists(f'{documents_path}/GisteData'):
+#     os.makedirs(f'{documents_path}/GisteData')
+#     make_ssl()
 
 def create_image(width, height, color1, color2):
     # Generate an image and draw a pattern
@@ -38,12 +32,11 @@ def create_image(width, height, color1, color2):
     return image
 
 def connect_callback(icon, item):
-    webbrowser.open_new_tab(f"http://localhost:{api_port}/connect")
+    webbrowser.open_new_tab(f"http://{local_ip}:{api_port}/connect")
 
 
 def quit_callback(icon, item):
-    requests.get(f"http://localhost:{api_port}/shutdown")
-    exit()
+    os._exit(1)
 
 
 # In order for the icon to be , you must provide an icon
@@ -52,7 +45,14 @@ icon = Icon('test', create_image(20, 20, "black", "white"), menu=Menu(
         'Connect',
         connect_callback,
     ),
+    MenuItem(
+        'Quit',
+        quit_callback,
+    ),
 ))
+
+toast("GisteDesktop Started", "GisteDesktop has been started. Click here to connect.", f"http://{local_ip}:{api_port}/connect")
+
 start_server(port=api_port, ip=local_ip)
 icon.run()
 
