@@ -12,7 +12,7 @@ app.config['CORS_ORIGINS'] = '*'
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
 codes = []
-frontend_client = "http://192.168.31.134:3000" # http://giste-client.pop-plays.live
+frontend_client = "http://giste-client.pop-plays.live" # http://192.168.31.134:3000
 
 def check_code(key):
    for data in codes:
