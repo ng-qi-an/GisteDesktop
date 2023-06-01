@@ -6,10 +6,11 @@ import time
 import random
 from flask_cors import CORS
 from utils import toast
+from engineio.async_drivers import threading
 import pyautogui
 app = Flask('')
 app.config['CORS_ORIGINS'] = '*'
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 CORS(app)
 codes = []
 frontend_client = "http://giste-client.pop-plays.live" # http://192.168.31.134:3000
@@ -118,6 +119,9 @@ def dashboard():
    <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}?ip={app.config['IP']}&port={app.config['PORT']}&pin={request.args.get('pin') or ""}'/>
    """
 
+@socketio.on("connect")
+def connected():
+   print("socket connected!")
 def run():
   print('=== running server ===')
   socketio.run(app, host='0.0.0.0', port=app.config['PORT'])

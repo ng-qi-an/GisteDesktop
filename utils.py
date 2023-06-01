@@ -5,9 +5,10 @@ import sys
 
 os_system = sys.platform
 
-if os_system == "darwin":
-    import pync
-elif os_system == "win32":
+# if os_system == "darwin":
+#     import pync
+# el
+if os_system == "win32":
     import win11toast
 
 def encode_base64(message):
@@ -33,5 +34,5 @@ def get_ip():
 def toast(title, text, onClick=None):
     if os_system == 'win32':
         win11toast.notify(title, text, on_click=onClick)
-    elif os_system == 'darwin':
-        pync.notify(text, title=title, open=onClick)
+    # elif os_system == 'darwin':
+    #     pync.notify(text, title=title, open=onClick)
