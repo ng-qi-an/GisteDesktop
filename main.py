@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw
 import os
 from server import start_server
 import webbrowser
-from utils import documents_path, get_ip, toast
+from utils import get_ip, toast
 
 
 
