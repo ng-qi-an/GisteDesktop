@@ -5,9 +5,8 @@ import sys
 
 os_system = sys.platform
 
-# if os_system == "darwin":
-#     import pync
-# el
+if os_system == "darwin":
+    import pync
 if os_system == "win32":
     import win11toast
 
@@ -16,7 +15,6 @@ def encode_base64(message):
     base64_bytes = base64.b64encode(message_bytes)
     return base64_bytes.decode('ascii')
 
-documents_path = os.path.expanduser('~/Documents')
 
 def get_ip():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -34,5 +32,5 @@ def get_ip():
 def toast(title, text, onClick=None):
     if os_system == 'win32':
         win11toast.notify(title, text, on_click=onClick)
-    # elif os_system == 'darwin':
-    #     pync.notify(text, title=title, open=onClick)
+    elif os_system == 'darwin':
+        pync.notify(text, title=title, open=onClick)
