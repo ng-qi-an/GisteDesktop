@@ -30,12 +30,14 @@ icon = Icon('test', Image.open("giste.png"), menu=Menu(
     ),
 ))
 
-# show a notification
-toast("GisteDesktop Started", "GisteDesktop has been started. Click here to connect.", f"http://{local_ip}:{api_port}/connect")
+if __name__ == '__main__':
+    icon.run()
+    # show a notification
+    toast("GisteDesktop Started", "GisteDesktop has been started. Click here to connect.", f"http://{local_ip}:{api_port}/connect")
 
-# start the API server
-start_server(port=api_port, ip=local_ip)
+    # start the API server
+    start_server(port=api_port, ip=local_ip)
 
-# Add the icon to the menubar (macOS) or system tray (windows).
-icon.run()
+    # Add the icon to the menubar (macOS) or system tray (windows).
+    icon.run()
 
