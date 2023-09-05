@@ -8,8 +8,15 @@ Usage:
 from setuptools import setup
 
 APP = ['Giste.py']
-DATA_FILES = []
-OPTIONS = {}
+DATA_FILES = ["giste.png"]
+
+
+OPTIONS = {
+    # "packages": [],
+    # "includes": ["pip"],
+    # "excludes": ["engineio"],
+}
+
 
 setup(
     app=APP,
