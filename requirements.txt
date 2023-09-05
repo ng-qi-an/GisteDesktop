@@ -3,7 +3,5 @@ gitpython
 flask-socketio
 flask
 flask-cors
-engineio
 pystray
-webbrowser
 pillow
