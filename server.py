@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 from threading import Thread
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import secrets
@@ -90,18 +90,8 @@ def createCode(res):
    
 @app.route('/connect')
 def connect():
-   return f"""
-   <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-   <style>
-      body, html {{
-         margin: 0;
-         padding: 0;
-      }}
-   </style>
-   <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}/connect?port={app.config['PORT']}'/>
-   """
+   print("hello")
+   return redirect("http://giste-client.pop-plays.live/connect?port=12436")
 
 
 @app.route('/dashboard')
