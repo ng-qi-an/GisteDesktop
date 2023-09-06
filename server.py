@@ -13,7 +13,7 @@ app.config['CORS_ORIGINS'] = '*'
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 CORS(app)
 codes = []
-frontend_client = "http://giste-client.pop-plays.live" # http://192.168.31.134:3000
+frontend_client = "https://giste-client.pop-plays.live" # http://192.168.31.134:3000
 
 def check_code(key):
    for data in codes:
@@ -91,7 +91,7 @@ def createCode(res):
 @app.route('/connect')
 def connect():
    print("hello")
-   return redirect("http://giste-client.pop-plays.live/connect?port=12436")
+   return redirect(f"{frontend_client}/connect?port=12436")
 
 
 @app.route('/dashboard')
