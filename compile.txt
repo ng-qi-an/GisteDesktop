@@ -1,0 +1,1 @@
+pyinstaller --noconfirm --onefile --console --name "Giste" --add-data "C:/Users/chris/Documents/GisteDesktop/giste.png;."  "C:/Users/chris/Documents/GisteDesktop/main.py"
