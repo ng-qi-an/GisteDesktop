@@ -18,8 +18,17 @@ def connect_callback(icon, item):
 def quit_callback(icon, item):
     os._exit(1)
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
-icon = Icon('test', Image.open("giste.png"), menu=Menu(
+    return os.path.join(base_path, relative_path)
+
+icon = Icon('test', Image.open(resource_path("giste.png")), menu=Menu(
     MenuItem(
         'Connect',
         connect_callback,

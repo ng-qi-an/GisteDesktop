@@ -15,6 +15,11 @@ CORS(app)
 codes = []
 frontend_client = "https://giste-client.pop-plays.live" # http://192.168.31.134:3000
 
+import logging
+logging.getLogger('werkzeug').setLevel(logging.ERROR)
+logging.getLogger('socketio').setLevel(logging.ERROR)
+logging.getLogger('engineio').setLevel(logging.ERROR)
+
 def check_code(key):
    for data in codes:
       if data['code'] == key:
@@ -113,7 +118,7 @@ def dashboard():
 def connected():
    print("socket connected!")
 def run():
-  print('=== running server ===')
+  print('Starting GisteDesktop. Do NOT CLOSE THIS TERMINAL AT ANY POINT.')
   socketio.run(app, host='0.0.0.0', port=app.config['PORT'])
 
 def start_server(port, ip):
