@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw
 import os
 from server import start_server
 import webbrowser
-from utils import get_ip, toast
+from utils import get_ip, toast, resource_path
 
 
 
@@ -12,21 +12,11 @@ api_port = 12436
 
 # == callbacks for menu items ==
 def connect_callback(icon, item):
-    webbrowser.open_new_tab(f"http://{local_ip}:{api_port}/connect")
+    webbrowser.open_new_tab(f"http://{local_ip}:{api_port}/host")
 
 
 def quit_callback(icon, item):
     os._exit(1)
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 icon = Icon('test', Image.open(resource_path("giste.png")), menu=Menu(
     MenuItem(
@@ -40,7 +30,7 @@ icon = Icon('test', Image.open(resource_path("giste.png")), menu=Menu(
 ))
 
 # show a notification
-toast("GisteDesktop Started", "GisteDesktop has been started. Click here to connect.", f"http://{local_ip}:{api_port}/connect")
+toast("GisteDesktop Started", "GisteDesktop has been started. Click here to connect.", f"http://{local_ip}:{api_port}/host")
 
 # start the API server
 start_server(port=api_port, ip=local_ip)

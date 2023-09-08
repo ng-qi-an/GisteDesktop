@@ -1,0 +1,57 @@
+{% extends 'parts/template.html' %}
+{% block content %}
+    <div id="loading" class="h-screen w-full flex items-center justify-center">
+        <span class="loading loading-spinner loading-lg"></span>
+    </div>
+    <div id="success" class="h-screen w-full flex items-center justify-center flex flex-col hidden">
+        <h1 class="text-2xl font-bold"><span class="text-primary">Connected</span> to Client</h1>
+        <p class="text-white/70">You may now close this tab.</p>
+    </div>
+    <div id="expired" class="h-screen w-full flex items-center justify-center flex flex-col hidden">
+        <h1 class="text-2xl font-bold">Code <span class="text-primary">Expired</span></h1>
+        <button onclick="window.location.reload()" class="btn btn-primary btn-sm mt-2">Generate New</button>
+    </div>
+    <div id="connectDiv" class="h-screen w-full flex items-center justify-center flex-col hidden">
+        <h1 class="text-2xl font-bold mb-4"><span class="text-primary">Giste</span>Desktop</h1>
+        <div class="mockup-phone">
+        <div class="camera"></div> 
+            <div class="display">
+                <div class="artboard artboard-demo phone-1 bg-[#05080F] p-6">
+                    <div class="flex-1"></div>
+                    <img id="pinqr" src="">
+                    <p id="pin" class="text-primary font-bold text-lg mt-2">1234</p>
+                    <p class="text-md w-full text-white/70 mb-0"><span class="text-primary font-semibold">1.</span> Connect to the same WIFI network</h2>
+                    <p class="text-md w-full text-white/70 mb-0"><span class="text-primary font-semibold">2.</span> Scan the QR code using your phone</h2>
+                    <div class="flex-1"></div>    
+                    <p class="text-white/50 text-sm">This code expires in 5 minutes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    var socket = io();
+    var timeout = null
+    socket.on("connect", ()=>{
+        socket.emit("createCode", {})
+    })
+    socket.on("createCode", (data)=>{
+        if (data.status == 'OK'){
+            $("#pinqr").attr("src", `http://api.qrserver.com/v1/create-qr-code/?data=${encodeURI(`http://${data.data.ip}:${data.data.port}/connect?pin=${data.data.pin}`)}&size=100x100&color=58-191-248&bgcolor=15-23-41`)
+            $("#pin").html(data.data.pin)
+            $("#loading").addClass("hidden")
+            $("#connectDiv").removeClass("hidden")
+            timeout = setTimeout(()=>{
+                $("#connectDiv").addClass("hidden")
+                $("#expired").removeClass("hidden")
+            }, 300000)
+        }
+    })
+    socket.on("verifyPin", ()=>{
+        clearTimeout(timeout)
+        $("#connectDiv").addClass("hidden")
+        $("#success").removeClass("hidden")
+    })
+</script>
+{% endblock %}

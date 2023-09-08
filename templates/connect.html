@@ -1,0 +1,42 @@
+{% extends 'parts/template.html' %}
+{% block content %}
+    <div id="loading" class="h-screen w-full flex items-center justify-center">
+        <span class="loading loading-spinner loading-lg"></span>
+    </div>
+    <form id="pinForm" class="h-screen w-full flex items-center justify-center flex-col hidden">
+        <h1 class="text-4xl font-bold"><span class="text-primary">Giste</span>Client</h1>
+        <input id="pin" type="text" placeholder="Enter code" required class="input input-bordered focus:input-primary w-full max-w-[300px] mt-4 mb-2"  maxlength="4" />
+        <button class="btn btn-primary w-full max-w-[300px]">Submit</button>
+    </form>
+{% endblock %}
+{% block scripts %}
+<script>
+    var socket = io();
+    socket.on("connect", ()=>{
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('pin')){
+            verifyPin(urlParams.get('pin'))
+        } else {
+            $("#loading").addClass("hidden")
+            $("#pinForm").removeClass("hidden")
+        }
+    })
+    $("#pinForm").submit((e)=>{
+        e.preventDefault()
+        verifyPin($("#pin").val());
+    });
+    function verifyPin(pin){
+        socket.emit('verifyPin', {pin: pin})
+    }
+    socket.on("verifyPin", (data)=>{
+        if(data.status == "OK"){
+            window.location.href = `/dashboard?code=${data.data.code}`
+        } else {
+            $("#pin").val("")
+            $("#loading").addClass("hidden")
+            $("#pinForm").removeClass("hidden")
+            alert("Invalid code provided")
+        }
+    })
+</script>
+{% endblock %}

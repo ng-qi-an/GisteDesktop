@@ -1,19 +1,27 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 from threading import Thread
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import secrets
 import time
 import random
 from flask_cors import CORS
-from utils import toast
+from utils import toast, get_ip, resource_path
 from engineio.async_drivers import threading
 import pyautogui
-app = Flask('')
+import sys
+import os
+
+if getattr(sys, 'frozen', False):
+    template_folder = os.path.join(sys._MEIPASS, 'templates')
+    app = Flask(__name__, template_folder=template_folder)
+else:
+    app = Flask(__name__)
+
 app.config['CORS_ORIGINS'] = '*'
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 CORS(app)
 codes = []
-frontend_client = "https://giste-client.pop-plays.live" # http://192.168.31.134:3000
+frontend_client = "giste-client.pop-plays.live" # http://192.168.31.134:3000
 
 import logging
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
@@ -46,7 +54,7 @@ def verifyPin(res):
                del data['expire']
                emit('verifyPin', to=data['code'])
                emit('verifyPin', {'status': 'OK', 'data': data})
-               toast('Client Connected', "A new client has connected to your computer.")
+               return toast('Client Connected', "A new client has connected to your computer.")
             break
          else:
             break
@@ -93,33 +101,26 @@ def createCode(res):
    join_room(payload['code'])
    emit('createCode', {'status': 'OK', 'data': {'ip': payload['ip'], 'pin': payload['pin'], 'port': payload['port']}})
    
+@app.route('/host')
+def host():
+   return render_template("host.html")
+
 @app.route('/connect')
 def connect():
-   print("hello")
-   return redirect(f"{frontend_client}/connect?port=12436")
+   return render_template("connect.html")
 
 
 @app.route('/dashboard')
 def dashboard():
-   return f"""
-   <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-   <style>
-      body, html {{
-         margin: 0;
-         padding: 0;
-      }}
-   </style>
-   <iframe style="height: 100%; width: 100%; border: none;" src='{frontend_client}?ip={app.config['IP']}&port={app.config['PORT']}&pin={request.args.get('pin') or ""}'/>
-   """
+   return render_template("dashboard.html")
 
 @socketio.on("connect")
 def connected():
    print("socket connected!")
-def run():
+
+def run(debug=False):
   print('Starting GisteDesktop. Do NOT CLOSE THIS TERMINAL AT ANY POINT.')
-  socketio.run(app, host='0.0.0.0', port=app.config['PORT'])
+  socketio.run(app, host='0.0.0.0', port=app.config['PORT'], debug=debug)
 
 def start_server(port, ip):
    app.config['PORT'] = port
@@ -127,3 +128,8 @@ def start_server(port, ip):
 
    t = Thread(target=run)
    t.start()
+
+if __name__ == "__main__":
+   app.config['PORT'] = 12436
+   app.config['IP'] = get_ip()
+   run(True)

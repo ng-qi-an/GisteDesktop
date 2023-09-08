@@ -1,0 +1,70 @@
+{% extends 'parts/template.html' %}
+{% block content %}
+    <div id="loading" class="h-screen w-full flex items-center justify-center">
+        <span class="loading loading-spinner loading-lg"></span>
+    </div>
+    <div id="dashboard" class="h-screen w-full flex items-center flex-col">
+        <div class="w-full h-[50px] border-b border-white/10 flex items-center px-4">
+            <h2 class="font-bold text-lg"><span class="text-primary">Giste</span>Client</h2>
+            <div class="flex-1"></div>
+            <button onclick="window.location.href = '/connect'" class="btn btn-circle btn-ghost">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+        </div>
+        <div class="flex-1"></div>
+        <div class="flex flex-col rounded-full overflow-hidden w-[300px] h-[300px]">
+            <button onclick="eval('pyautogui.press(\'up\')')" class="btn rounded-none h-[75px] w-full">
+                <i class="fa-solid fa-chevron-up text-white/70"></i>
+            </button>
+            <div class="w-full h-[150px] flex">
+                <button onclick="eval('pyautogui.press(\'left\')')" class="btn rounded-none h-full w-[75px]">
+                    <i class="fa-solid fa-chevron-left text-white/70"></i>
+                </button>
+                <button onclick="eval('pyautogui.click()')" class="btn rounded-none h-[150px] w-[150px]">
+                    OK
+                </button>
+                <button onclick="eval('pyautogui.press(\'right\')')" class="btn rounded-none h-full w-[75px]">
+                    <i class="fa-solid fa-chevron-right text-white/70"></i>
+                </button>
+            </div>
+            <button onclick="eval('pyautogui.press(\'down\')')" class="btn rounded-none h-[75px] w-full">
+                <i class="fa-solid fa-chevron-down text-white/70"></i>
+            </button>
+        </div>
+        <p class="text-white/30 w-full max-w-[300px] mt-8 text-sm font-bold">Keyboard Control</p>
+        <form id="keyboardForm" class="flex items-center w-full mt-2 gap-2 max-w-[300px]">
+            <input id="keyboard" class="input input-bordered w-full" placeholder="Hello World!">
+            <button class="btn btn-square btn-primary">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form> 
+        <div class="flex-1"></div>
+    </div>
+{% endblock %}
+{% block scripts %}
+<script>
+    var socket = io();
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    socket.on("connect", ()=>{
+        socket.emit("verifyCode", {code: code})
+    })
+    socket.on("verifyCode", (data)=>{
+        if (data.status == 'OK'){
+            $("#loading").addClass("hidden")
+        } else {
+            alert("Invalid code provided")
+            window.location.href = '/connect'
+        }
+    })
+    $("#keyboardForm").submit((e)=>{
+        e.preventDefault()
+        eval(`pyautogui.write("${$('#keyboard').val()}")`)
+        $("#keyboard").focus()
+        $('#keyboard').val("")
+    })
+    function eval(coder){
+        socket.emit("evaluate", {code: code, data:coder})
+    }
+</script>
+{% endblock %}
