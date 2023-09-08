@@ -11,22 +11,22 @@
         <h1 class="text-2xl font-bold">Code <span class="text-primary">Expired</span></h1>
         <button onclick="window.location.reload()" class="btn btn-primary btn-sm mt-2">Generate New</button>
     </div>
-    <div id="connectDiv" class="h-screen w-full flex items-center justify-center flex-col hidden">
+    <div id="connectDiv" class="h-screen w-full flex items-start justify-center p-4 flex-col hidden">
+        <div class="flex-1"></div>
         <h1 class="text-2xl font-bold mb-4"><span class="text-primary">Giste</span>Desktop</h1>
-        <div class="mockup-phone">
-        <div class="camera"></div> 
-            <div class="display">
-                <div class="artboard artboard-demo phone-1 bg-[#05080F] p-6">
-                    <div class="flex-1"></div>
-                    <img id="pinqr" src="">
-                    <p id="pin" class="text-primary font-bold text-lg mt-2">1234</p>
-                    <p class="text-md w-full text-white/70 mb-0"><span class="text-primary font-semibold">1.</span> Connect to the same WIFI network</h2>
-                    <p class="text-md w-full text-white/70 mb-0"><span class="text-primary font-semibold">2.</span> Scan the QR code using your phone</h2>
-                    <div class="flex-1"></div>    
-                    <p class="text-white/50 text-sm">This code expires in 5 minutes</p>
-                </div>
+        <div class="flex bg-neutral p-4 rounded-lg gap-4">
+            <div class="flex flex-col items-center">
+                <img id="pinqr" src="">
+                <p id="pin" class="text-primary font-bold text-lg mt-2">1234</p>
+            </div> 
+            <div class="flex flex-col h-[100px] justify-center py-4">
+                <p class="text-md w-full text-white/70 mb-0"><span class="text-primary font-semibold">1.</span> Connect to the same WIFI network</p>
+                <p class="text-md w-full text-white/70 mb-0"><span class="text-primary font-semibold">2.</span> Scan the QR code using your phone</p>
             </div>
         </div>
+        <button onclick="window.location.reload()" class="btn btn-primary btn-sm mt-2">Regenerate</button>
+        <div class="flex-1"></div>    
+        <p class="text-white/50 text-sm">This code expires in 5 minutes</p>
     </div>
 {% endblock %}
 {% block scripts %}

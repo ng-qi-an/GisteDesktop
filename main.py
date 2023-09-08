@@ -37,6 +37,6 @@ start_server(port=api_port, ip=local_ip)
 # Add the icon to the menubar (macOS) or system tray (windows).
 #icon.run()
 
-window = webview.create_window('GisteDesktop', f'http://{local_ip}:{api_port}/host', width=500, height=800, resizable=False, confirm_close=True)
+window = webview.create_window('GisteDesktop', f'http://{local_ip}:{api_port}/host', width=450, height=400, resizable=False, confirm_close=True)
 webview.start()
 os._exit(1)
