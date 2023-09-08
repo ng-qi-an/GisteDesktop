@@ -2,10 +2,9 @@ from pystray import Icon, Menu, MenuItem
 from PIL import Image, ImageDraw
 import os
 from server import start_server
-import webbrowser
+#import webbrowser
 from utils import get_ip, toast, resource_path
 import webview
-
 
 local_ip = get_ip()
 api_port = 12436
@@ -32,11 +31,11 @@ api_port = 12436
 
 # start the API server
 
-start_server(port=api_port, ip=local_ip)
+#start_server(port=api_port, ip=local_ip)
 
 # Add the icon to the menubar (macOS) or system tray (windows).
 #icon.run()
 
 window = webview.create_window('GisteDesktop', f'http://{local_ip}:{api_port}/host', width=450, height=400, resizable=False, confirm_close=True)
-webview.start()
+webview.start(start_server(port=api_port, ip=local_ip), window)
 os._exit(1)

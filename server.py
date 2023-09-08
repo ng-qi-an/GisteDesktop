@@ -18,6 +18,8 @@ else:
     app = Flask(__name__)
 
 app.config['CORS_ORIGINS'] = '*'
+app.config['PORT'] = 12436
+app.config['IP'] = get_ip()
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 CORS(app)
 codes = []
@@ -54,7 +56,8 @@ def verifyPin(res):
                del data['expire']
                emit('verifyPin', to=data['code'])
                emit('verifyPin', {'status': 'OK', 'data': data})
-               return toast('Client Connected', "A new client has connected to your computer.")
+               #toast('Client Connected', "A new client has connected to your computer.")
+               return
             break
          else:
             break
