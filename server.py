@@ -125,7 +125,6 @@ def run(debug=False):
 def start_server(port, ip):
    app.config['PORT'] = port
    app.config['IP'] = ip
-
    t = Thread(target=run)
    t.start()
 
