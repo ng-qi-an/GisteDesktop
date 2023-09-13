@@ -44,3 +44,8 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
+def get_version():
+    with open('version.txt') as f:
+        contents = f.read()
+    return contents

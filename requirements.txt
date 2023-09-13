@@ -5,3 +5,5 @@ flask
 flask-cors
 pystray
 pillow
+clint
+requests
