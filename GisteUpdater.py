@@ -7,7 +7,8 @@ from git import Repo
 
 
 if sys.platform == 'win32':
-     os_prefix = "py"
+    os_prefix = "py"
+    giste_dir = os.path.expanduser('~/AppData/Local/GisteDesktop')
 elif sys.platform == 'darwin':
     os_prefix = "python3"
     giste_dir = os.path.expanduser('~/Library/Application Support/GisteDesktop')
