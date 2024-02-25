@@ -4,13 +4,13 @@ import sys
 import os
 import subprocess
 from git import Repo
-giste_dir = os.path.expanduser('~/Library/Application Support/GisteDesktop')
 
 
 if sys.platform == 'win32':
      os_prefix = "py"
 elif sys.platform == 'darwin':
     os_prefix = "python3"
+    giste_dir = os.path.expanduser('~/Library/Application Support/GisteDesktop')
 
 
 

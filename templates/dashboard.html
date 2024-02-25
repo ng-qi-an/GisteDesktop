@@ -31,9 +31,9 @@
                 <i class="fa-solid fa-chevron-down text-white/70"></i>
             </button>
         </div>
-        <p class="text-white/30 w-full max-w-[300px] mt-8 text-sm font-bold">Keyboard Control</p>
+        <p class="text-white/30 w-full max-w-[300px] mt-8 text-sm font-bold">Console control</p>
         <form id="keyboardForm" class="flex items-center w-full mt-2 gap-2 max-w-[300px]">
-            <input id="keyboard" class="input input-bordered w-full" placeholder="Hello World!">
+            <input id="keyboard" class="input input-bordered w-full" placeholder='print("Hello World!")'>
             <button class="btn btn-square btn-primary">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
@@ -59,7 +59,7 @@
     })
     $("#keyboardForm").submit((e)=>{
         e.preventDefault()
-        eval(`pyautogui.write("${$('#keyboard').val()}")`)
+        eval($('#keyboard').val())
         $("#keyboard").focus()
         $('#keyboard').val("")
     })
